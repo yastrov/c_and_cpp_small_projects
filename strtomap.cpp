@@ -2,9 +2,11 @@
 * Convert string "key1:val1:key2:val2" to map.
 *
 * Программа для преобразования строки вида:
+* Programm for translate string to map object:
 * "key1:val1:key2:val2" в map.
 * @author Yuri Astrov <yuriastrov@gmail.com>
 *         Юрий Астров
+* Created 2014-04-20
 */
 #include <iostream>
 #include <map>
