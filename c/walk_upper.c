@@ -9,16 +9,17 @@ For help, print in terminal:
 man ftw
 */
 #define _XOPEN_SOURCE 500
-#if __x86_64__ || _WIN64
-  #include <ftw64.h>
-#else
-//__i386__ || _M_IX86 || _WIN32
-  #include <ftw.h> /* dirent.h is a lats year for Linux:). As and sys/dir.h*/
-#endif
+/* Next two include for support large files
+http://www.ualberta.ca/dept/chemeng/AIX-43/share/man/info/C/a_doc_lib/aixprggd/genprogc/prg_lrg_files.htm
+OR
+http://www-01.ibm.com/support/knowledgecenter/ssw_aix_53/com.ibm.aix.genprogc/doc/genprogc/prg_lrg_files.htm%23a288fa5d972soni
+*/
+#include <sys/types.h>
+#include <fcntl.h>
+#include <ftw.h> /* dirent.h is a lats year for Linux:). As and sys/dir.h*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdint.h>
 #include <ctype.h> // for isupper and others.
 
 #define MAX_PATH_SIZE 255
@@ -26,29 +27,8 @@ man ftw
 #define NULL_STR_END '\0'
 #define CONTROL_EXT ".fb2"
 #define HOW_MANY_CHAR_AFTER_UNDERL_UPPER 2
+#define DEPTH_FOR_WALKING 20
 char buf[MAX_PATH_SIZE];
-
-/*
-First, old version.
-index - position of first filename symbol in fpath;
-localbuf is a char array, that must be bigger than fpath.
-*/
-void
-create_new_name(const char *fpath, size_t index, char * localbuf)
-{
-  size_t i = index;
-  int counter = 0;
-  strcpy(localbuf, fpath);
-  localbuf[i] = toupper(localbuf[i]);
-  for(; localbuf[i] != NULL_STR_END; i++)
-  {
-    if((localbuf[i-1] == '_')&&(counter < HOW_MANY_CHAR_AFTER_UNDERL_UPPER))
-    {
-      localbuf[i] = toupper(localbuf[i]);
-      counter++;
-    }
-  }
-}
 
 /*
 Actual version, with using pointers.
@@ -62,9 +42,10 @@ create_new_name_ptr(const char *fpath, size_t index, char * localbuf)
   strcpy(localbuf, fpath);
   char * ptr = localbuf + index;
   *ptr = toupper(*ptr);
-  for(; *ptr != NULL_STR_END; ptr++)
+  ptr++;
+  for(; *ptr != NULL_STR_END && counter < HOW_MANY_CHAR_AFTER_UNDERL_UPPER; ptr++)
   {
-    if((*(ptr-1) == '_')&&(counter < HOW_MANY_CHAR_AFTER_UNDERL_UPPER))
+    if( *(ptr-1) == '_')
     {
       *ptr = toupper(*ptr);
       //*ptr = 'A' - 'a' + *ptr; //This is analog.
@@ -79,10 +60,8 @@ process_file(const char *fpath, const struct stat *sb,
 {
   if (tflag == FTW_F)
   {
-    printf("-----------\n");
     size_t index;
     char * pch;
-    printf("%s\n", fpath);
 
     pch = strrchr(fpath, PATH_SEPARATOR);
     if (pch == NULL)
@@ -105,7 +84,7 @@ process_file(const char *fpath, const struct stat *sb,
         if(rename(fpath, buf) != 0)
         {
           perror( strcat("Error renaming file:", fpath));
-          return 1;
+          return -1;
         }
       }
     }
@@ -128,7 +107,7 @@ main(int argc, char *argv[])
   if (argc > 2 && strchr(argv[2], 'p') != NULL)
       flags |= FTW_PHYS;
 
-  if (nftw(argv[1], process_file, 20, flags)
+  if (nftw64(argv[1], process_file, DEPTH_FOR_WALKING, flags)
                      == -1) {
                  perror("Attention: nftw error");
                  exit(EXIT_FAILURE);
