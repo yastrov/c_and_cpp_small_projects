@@ -42,14 +42,14 @@ int main(){
          exit(1);
 	}
     printf("Enter the elements which to be sort:\n");
-    for(i=0; i<n; i++){
+    for(i=0; i<n; ++i){
          scanf("%d", &a[i]);
     }
 
     main_merge_sort(a, 0, n-1);
 
     printf("After merge sorting, elements are:\n");
-    for(i=0; i < n; i++){
+    for(i=0; i < n; ++i){
          printf("%d ", a[i]);
     }
     printf("\n");
@@ -87,7 +87,7 @@ void partition(int arr[], size_t low, size_t high, int buffer[]){
 	static size_t rec = 0;
     if(low < high){
          mid = low + (high-low)/2; // Naive realization
-		 rec++;
+		++rec;
  		 if(rec == MAX_RECURSION_LIMIT){
 			 RESERVE_SORT(arr, low, high);
 			 free(buffer);
@@ -95,7 +95,7 @@ void partition(int arr[], size_t low, size_t high, int buffer[]){
 		 }
          partition(arr, low, mid, buffer);
          partition(arr, mid+1, high, buffer);
-		 rec--;
+		--rec;
          merge_sort(arr, low, mid, high, buffer);
     }
 }
@@ -115,26 +115,26 @@ void merge_sort(int arr[], size_t low, size_t mid, size_t high, int buffer[]){
 	while((a_f_index <= mid) && (a_s_index <= high)){
 		if(arr[a_f_index] < arr[a_s_index]) {
 			buffer[b_index] = arr[a_f_index];
-			a_f_index++;
+			++a_f_index;
 		}
 		else {
 			buffer[b_index] = arr[a_s_index];
-			a_s_index++;
+			++a_s_index;
 		}
 		b_index++;
 	}
 	if(a_f_index > mid) {
-		for(i=a_s_index; i <= high; i++){
+		for(i=a_s_index; i <= high; ++i) {
              buffer[b_index] = arr[i];
-             b_index++;
+             ++b_index;
          }
 	}
 	else {
-		for(i=a_f_index; i <= mid; i++){
-             buffer[b_index] = arr[i];
-             b_index++;
+		for(i=a_f_index; i <= mid; ++i) {
+            buffer[b_index] = arr[i];
+            ++b_index;
          }
 	}
-	for(i=low; i <= high; i++)
+	for(i=low; i <= high; ++i)
 		arr[i] = buffer[i];
 }

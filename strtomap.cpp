@@ -48,7 +48,7 @@ map<string, string> str_to_dict(const list<string>& s){
     {  
         if (i%2 == 0) {
 	          key = val;
-	          i++;
+	          ++i;
 	      }
 	      else{
 	         result[key] = val;
@@ -65,7 +65,7 @@ map<string, list<string>> str_to_dict2(const list<string>& s){
     {  
         if (i%2 == 0) {
 	        key = val;
-	        i++;
+	        ++i;
 	    }
 	    else{
 			result[key].push_back(val);

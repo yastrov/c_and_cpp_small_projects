@@ -15,8 +15,8 @@ size_t numofchars(const char* ch) {
 	size_t n = 0;
 	const char* pointer = ch;
 	while (*pointer != '\0'){
-		n++;//n=n+1; n+=1;
-		pointer++;
+		++n;//n=n+1; n+=1;
+		++pointer;
 	}
 	return n;
 }
@@ -31,7 +31,7 @@ int main(int argc, char**argv)
 	cout << setw(15) << "Size of char: " << sizeof(char) << endl
 		<< setw(15) << "Size of int: " << sizeof(int) << endl;
 	cout << "char" << "\tScan Code клавиши (dec, hex)" << endl;
-	for (size_t i = 0; i < size_of_string; i++){
+	for (size_t i = 0; i < size_of_string; ++i){
 		/*Распечатаем символ.*/
 		cout << hworld[i] << "\t"
 			/*Распечатаем код клавиши в 10-тичном виде.*/
@@ -58,7 +58,7 @@ int main(int argc, char**argv)
 	int *new_hint = new int[size_of_string_int];
 	/*Можно было бы int new_hint2[3];*/
 	cout << "Array of int:" << endl;
-	for (size_t i = 0; i < size_of_string_int; i++){
+	for (size_t i = 0; i < size_of_string_int; ++i){
 		cout << dec << setw(10) << hint[i] << "\t"
 			<< hex << hint[i] << endl;
 		/*Для чистоты эксперимента копируем уже как int-ы.*/

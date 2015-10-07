@@ -67,7 +67,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			*/
 			//readfrom(input, &item);
 			readfrom(input, &items[i]);
-			i++;
+			++i;
 		}
 		if (!input.eof())
 			input.read((char*)&ending, sizeof(ending));
